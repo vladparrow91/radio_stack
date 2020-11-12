@@ -1,7 +1,17 @@
 import React from "react";
 import AudioPlayer from 'react-modular-audio-player';
 import './radio.css'
-
+import {
+  countryListURL,
+  addressListURL,
+  addressCreateURL,
+  addressUpdateURL,
+  addressDeleteURL,
+  userIDURL,
+  paymentListURL,
+  userDetailsURL
+} from "../constants";
+import { authAxios } from "../utils";
 import {
   Container,
   Divider,
@@ -48,20 +58,38 @@ let iconStyle = { width: "fit-content" },
   ];
 
 
-let audioFiles = [
-  {
-    src: "http://213.141.133.1:8000/stream",
-    title: "The Top",
-    artist: "PrioFM",
-    hideTime:true
-  },
-  {
-    src: "http://213.141.133.1:8000/stream",
-    title: "prio",
-    artist: "Topp",
-    hideTime:true
-  }
-    ];
+
+
+function radioEl(props) {
+    let audioFiles = [
+      {
+        src: "http://213.141.133.1:8000/stream",
+        title: {props.title},
+        artist: "PrioFM",
+        hideTime:true
+      },
+      {
+        src: "http://213.141.133.1:8000/stream",
+        title: "prio",
+        artist: "Topp",
+        hideTime:true
+      }
+        ];
+  return (
+  <div>
+  <AudioPlayer
+                 audioFiles={audioFiles}
+                 rearrange={rearrangedPlayer}
+                 playerWidth="10rem"
+                 iconSize="1.5rem"
+                 fontSize="1rem"
+                 sliderClass="invert-blue-grey"
+                 fontColor="#bd7a00"
+
+                              />
+                              </div>
+  );
+}
 
 class CustomLayout extends React.Component {
  state = {
@@ -74,30 +102,15 @@ class CustomLayout extends React.Component {
   };
   componentDidMount() {
     this.props.fetchCart();
-    this.props.handleFetchUserDetails();
+
   }
-   handleFetchUserDetails = () => {
-    this.setState({ loading: true });
-    authAxios
-      .get(userDetailsURL)
-      .then(res => {
-        this.setState({
-          loading: false,
-          userData: res.data.user,
-          userVK: res.data.vk
-        });
-      })
-      .catch(err => {
-        this.setState({ error: err, loading: false });
-      });
-  };
 
   render() {
+
 
     const { authenticated, cart, loading,userData } = this.props;
     return (
       <div>
-      {userData.last_name}
         <Menu inverted>
           <Container>
             <Link to="/">
@@ -107,16 +120,7 @@ class CustomLayout extends React.Component {
               <Menu.Item header>Products</Menu.Item>
             </Link>
             <div >
-             <AudioPlayer
-                 audioFiles={audioFiles}
-                 rearrange={rearrangedPlayer}
-                 playerWidth="10rem"
-                 iconSize="1.5rem"
-                 fontSize="1rem"
-                 sliderClass="invert-blue-grey"
-                 fontColor="#bd7a00"
-
-                              />
+                <radioEl title="Forever"/>
             </div>
             {authenticated ? (
               <React.Fragment>
